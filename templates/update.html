@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>最大１４０文字まで入力できます。</p>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+        <button type="submit">送信</button>
+</form>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>{{ user.username }}さんのユーザー情報</h2>
+
+    <p>自己紹介：{{ user.profile.introduction }}</p>
+    <p>性別：{% if user.profile.sex == "1" %}女{% else %}男{% endif %}</p>
+
+
+    {% if request.user.is_superuser or user.id == request.user.id %}
+        {% if user.profile.introduction %}
+            <p><a href="{% url 'accounts:user_update' user.profile.id %}">編集</a></p>
+        {% else %}
+            <p><a href="{% url 'accounts:user_create' user.id %}">ユーザー情報作成</a></p>
+        {% endif %}
+
+        {% if user.id == request.user.id %}
+            <a href="{% url 'accounts:password_change' user.id %}">パスワード変更</a>
+        {% endif %}
+
+
+        {% if user.id == request.user.id%}
+            <br>
+            <h3>登録中のブラックリスト</h3>
+            {% if black_list %}
+                <ul>
+                    {% for id, user_name in mix_list %}
+                        <li>
+                            <label><a href="{% url 'accounts:user_detail' id %}">{{ user_name }}</a></label>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                {% if profile %}
+                    <ul><li><p>登録されているブラックリストはありません</p></li></ul>
+                {% else %}
+                    <ul><li><p>ユーザー情報を登録すると、ブラックリスト機能が使用可能になります</p></li></ul>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+
+    {% if user.id != request.user.id  %}
+        {% if profile %}
+            <form method="post" action="{% url 'accounts:black_list' user.id %}">
+                {% csrf_token %}
+                {% if user.id in black_list %}
+                    <label><strong>このユーザーをブラックリストから削除しますか？</strong></label>
+                    <input type="submit" name="del_bl" value="BL削除">
+                {% else %}
+                    <label><strong>このユーザーをブラックリストに追加しますか？</strong></label>
+                    <input type="submit" name="add_bl" value="BL追加">
+                {% endif %}
+            </form>
+        {% else %}
+            <strong>ユーザー情報を登録すると、ブラックリスト機能が使用可能になります</strong>
+        {% endif %}
+    {% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+
+{% block header %}
+{% if user.is_authenticated %}
+    <label><a href="{% url 'app:create' %}">投稿</a></label>
+{% endif %}
+{% endblock%}
+
+
+{% block content %}
+    {% for data in article_list %}
+        {% if not data.author_id in black_list %}
+            <p>----------------------------------------------------------</p>
+            <p>{{ data.text }}</p>
+            <p>{{ data.created_at }}</p>
+            <p>投稿者：<a href="{% url 'accounts:user_detail' data.author_id %}">{{ data.author }}</a></p>
+            {% if request.user.is_superuser or data.author_id == request.user.id %}
+                <label><a href="{% url 'app:update' data.id%}">編集</a></label>
+                <label><a href="{% url 'app:delete' data.id%}">削除</a></label>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    <br>
+
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">前へ</a>
+    {% endif %}
+
+    {% for page in paginator.page_range %}
+        {% if page != page_obj.number %}
+            <a href="?page={{ page }}">{{ page }}</a>
+        {% else %}
+            <b>{{ page }}</b>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">次へ</a>
+    {% endif %}
+
+{% endblock %}
+
+
+{% block not_log_content %}
+    <h2><a href="{% url 'login' %}">ログイン</a></h2>
+    <h2><a href="{% url 'accounts:signup' %}">アカウント作成</a></h2>
+{% endblock %}
