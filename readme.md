@@ -1,12 +1,12 @@
-#簡易 多分投稿SNS webアプリ
+# 簡易 多分投稿SNS webアプリ
 
-###環境
+## 環境
 - Python 3.6.5
 - Mac
 - Django 2.1.7
 
-##初期設定
-###マイグレーション
+## 初期設定
+### マイグレーション
 `python manage.py makemigrations`  
 マイグレーションファイル作成  
 `python manage.py migrate`  
