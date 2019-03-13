@@ -15,6 +15,25 @@
             <p>{{ data.text }}</p>
             <p>{{ data.created_at }}</p>
             <p>投稿者：<a href="{% url 'accounts:user_detail' data.author_id %}">{{ data.author }}</a></p>
+
+            {% for k, v in likes.items %}
+                {% if k == data.id %}
+                    <form method="post" action="{% url 'app:like' data.id %}">
+                        {% csrf_token %}
+                        <label>いいね！：{{ v }}</label>
+                        {% for k2, v2 in status_dic.items %}
+                            {% if k2 == data.id%}
+                                {% if not v2 %}
+                                    <input type="submit" name="add_like" value="追加">
+                                {% else %}
+                                    <input type="submit" name="del_like" value="削除">
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </form>
+                {% endif %}
+            {% endfor %}
+
             {% if request.user.is_superuser or data.author_id == request.user.id %}
                 <label><a href="{% url 'app:update' data.id%}">編集</a></label>
                 <label><a href="{% url 'app:delete' data.id%}">削除</a></label>
@@ -39,6 +58,7 @@
     {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}">次へ</a>
     {% endif %}
+
 
 {% endblock %}
 

@@ -121,14 +121,15 @@ def black_list(request, pk):
         req_profile = Profile.objects.get(user_id=request.user.id)
         text = req_profile.black_list
 
-        if "del_bl" in request.POST:
-            new_bl = BlackList.delete_bl(text, str(pk))
+        if "add_bl" in request.POST:
+            new_bl = BlackList.add_bl(text, str(pk))
             profile = Profile.objects.get(user_id=request.user.id)
             profile.black_list = new_bl
             profile.save()
             return redirect('accounts:user_detail', pk=request.user.id)
-        elif "add_bl" in request.POST:
-            new_bl = BlackList.add_bl(text, str(pk))
+
+        elif "del_bl" in request.POST:
+            new_bl = BlackList.delete_bl(text, str(pk))
             profile = Profile.objects.get(user_id=request.user.id)
             profile.black_list = new_bl
             profile.save()

@@ -5,8 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 from .forms import ArticleForm
-from .models import Article, Profile
+from .models import Article, Profile, Like
 from libs import BlackList
+from django.shortcuts import redirect
 
 
 # トップページ
@@ -26,12 +27,38 @@ class IndexView(LoginRequiredMixin, generic.ListView):
     # ブラックリストは表示しない
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # ブラックリスト
         try:
             str_bl = BlackList.read_bl(self.request.user.profile.black_list)
             int_bl = BlackList.str_to_int(str_bl)
             context["black_list"] = int_bl
         except Profile.DoesNotExist:
             pass
+
+        # いいね
+        like_dic = {}
+        status_dic = {}
+        articles = Article.objects.all()
+        for article in articles:
+            # いいね数読み込み
+            try:
+                like_count = Like.objects.filter(article_id=article.id).count()
+                like_dic[article.id] = like_count
+            except Like.DoesNotExist:
+                like_dic[article.id] = 0
+
+            # リクエストユーザーがいいねしたかどうか
+            try:
+                # いいねしてる
+                Like.objects.filter(article_id=article.id).get(user_id=self.request.user.id)
+                status_dic[article.id] = True
+            except Like.DoesNotExist:
+                # いいねしてない
+                status_dic[article.id] = False
+        context["likes"] = like_dic
+        context["status_dic"] = status_dic
+
         return context
 
 
@@ -87,3 +114,20 @@ class DeleteView(LoginRequiredMixin, generic.DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, "投稿を削除しました")
         return super().delete(request, *args, **kwargs)
+
+
+# いいね機能
+def like(request, pk):
+    if request.method == 'POST':
+        # いいね追加
+        if "add_like" in request.POST:
+            add_like = Like(article_id=pk, user_id=request.user.id)
+            add_like.save()
+            return redirect("app:index")
+
+        # いいね削除
+        elif "del_like" in request.POST:
+            del_like = Like.objects.get(article_id=pk, user_id=request.user.id)
+            print(del_like)
+            del_like.delete()
+            return redirect("app:index")
