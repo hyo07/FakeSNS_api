@@ -57,7 +57,9 @@ pipenv shell
 ```commandline
 python manage.py makemigrations
 ```  
-マイグレーションファイル作成  
+~~マイグレーションファイル作成~~    
+もしも次に行うマイグレートに失敗した場合に上記を実行してみてください。
+
 
 ```commandline
 python manage.py migrate
