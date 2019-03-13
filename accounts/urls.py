@@ -16,5 +16,6 @@ urlpatterns = [
 
     path('<int:pk>/mylike', views.MyLikeArticle.as_view(), name="mylike"),
     path('<int:pk>/mylike/like', views.dellike, name='del_mylike'),
+    path('<int:pk>/myarticle', views.MyArticle.as_view(), name='myarticle'),
 
 ]

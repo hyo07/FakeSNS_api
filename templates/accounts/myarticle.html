@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for data in article_list %}
+    <p>----------------------------------------------------------</p>
+    <p>{{ data.text }}</p>
+    <p>{{ data.created_at }}</p>
+    <p>投稿者：<a href="{% url 'accounts:user_detail' data.author_id %}">{{ data.author }}</a></p>
+
+    {% if request.user.is_superuser or data.author_id == request.user.id %}
+        <label><a href="{% url 'app:update' data.id%}">編集</a></label>
+        <label><a href="{% url 'app:delete' data.id%}">削除</a></label>
+    {% endif %}
+
+{% endfor %}
+
+{% endblock %}

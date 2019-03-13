@@ -8,15 +8,10 @@
 
 <body>
 <header>
+
     <label><a href="{% url 'app:index' %}">HOME</a></label>
     {% block header %}
     {% endblock %}
-
-    {% if messages %}
-        {% for message in messages %}
-            <h2 style="color: red">{{ message }}</h2>
-        {% endfor %}
-    {% endif %}
 
     {% if not user.is_authenticated %}
         <label><a href="{% url 'login' %}">ログイン</a></label>
@@ -24,17 +19,25 @@
         <label>ログイン中：<strong>{{ request.user.username }}</strong></label>
         <label><a href="{% url 'accounts:user_detail' request.user.id %}">マイページ</a></label>
         <label><a href="{% url 'accounts:mylike' request.user.id %}">いいね一覧</a></label>
+        <label><a href="{% url 'accounts:myarticle' request.user.id %}">投稿記事一覧</a></label>
         <label><a href="{% url 'logout' %}">ログアウト</a></label>
     {% endif %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <h2 style="color: red">{{ message }}</h2>
+        {% endfor %}
+    {% endif %}
+
 </header>
 
-{% if  user.is_authenticated %}
-    {% block content %}
-    {% endblock %}
-{% else %}
-    {% block not_log_content %}
-    {% endblock %}
-{% endif %}
+    {% if  user.is_authenticated %}
+        {% block content %}
+        {% endblock %}
+    {% else %}
+        {% block not_log_content %}
+        {% endblock %}
+    {% endif %}
 
 <footer>
     {% block footer %}
