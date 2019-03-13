@@ -38,4 +38,4 @@ class Profile(models.Model):
 class Like(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='like_user')
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    date_created = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)

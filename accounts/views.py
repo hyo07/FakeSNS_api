@@ -152,7 +152,7 @@ class MyLikeArticle(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         # いいねした投稿をフィルター
         context = super().get_context_data(**kwargs)
-        my_like = Like.objects.filter(user_id=self.kwargs["pk"])
+        my_like = Like.objects.filter(user_id=self.kwargs["pk"]).order_by("-article_id")
         res_list = []
         for my in my_like:
             article = Article.objects.get(id=my.article_id)
