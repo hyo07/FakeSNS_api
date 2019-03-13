@@ -1,8 +1,8 @@
 # 簡易 短文投稿SNS
 
 ## 環境
-- Python 3.6.5
 - Mac
+- Python 3.6.5
 - Django 2.1.7
 
 ## 実装した機能
