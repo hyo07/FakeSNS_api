@@ -12,12 +12,12 @@ from django.shortcuts import redirect
 
 # トップページ
 def top(request):
-    return render(request, "index.html")
+    return render(request, "app/index.html")
 
 
 # 一覧表示
 class IndexView(LoginRequiredMixin, generic.ListView):
-    template_name = "index.html"
+    template_name = "app/index.html"
     model = Article
     paginate_by = 10
 
@@ -64,7 +64,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
 
 # 新規投稿
 class CreateView(LoginRequiredMixin, generic.CreateView):
-    template_name = "create.html"
+    template_name = "app/create.html"
     model = Article
     form_class = ArticleForm
     success_url = reverse_lazy("app:index")
@@ -80,7 +80,7 @@ class CreateView(LoginRequiredMixin, generic.CreateView):
 
 # 編集
 class UpdateView(LoginRequiredMixin, generic.UpdateView):
-    template_name = "update.html"
+    template_name = "app/update.html"
     model = Article
     form_class = ArticleForm
     success_url = reverse_lazy("app:index")
@@ -101,7 +101,7 @@ class UpdateView(LoginRequiredMixin, generic.UpdateView):
 
 # 削除
 class DeleteView(LoginRequiredMixin, generic.DeleteView):
-    template_name = "delete.html"
+    template_name = "app/delete.html"
     model = Article
     success_url = reverse_lazy("app:index")
 
