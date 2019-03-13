@@ -1,7 +1,7 @@
 from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from app.models import Profile
+from app.models import Profile, Article, Like
 from app.forms import ProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
@@ -11,6 +11,7 @@ from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from libs import BlackList
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
 
 
 # アカウント新規作成
@@ -116,6 +117,7 @@ class PasswordChangeDone(LoginRequiredMixin, PasswordChangeDoneView):
 
 
 # ブラックリスト追加 / 削除
+@login_required
 def black_list(request, pk):
     if request.method == 'POST':
         req_profile = Profile.objects.get(user_id=request.user.id)
@@ -134,3 +136,62 @@ def black_list(request, pk):
             profile.black_list = new_bl
             profile.save()
             return redirect('accounts:user_detail', pk=request.user.id)
+
+
+# いいねした記事一覧
+class MyLikeArticle(LoginRequiredMixin, generic.ListView):
+    template_name = "accounts/mylike.html"
+    model = Article
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        # いいねした投稿をフィルター
+        context = super().get_context_data(**kwargs)
+        my_like = Like.objects.filter(user_id=self.kwargs["pk"])
+        res_list = []
+        for my in my_like:
+            article = Article.objects.get(id=my.article_id)
+            res_list.append(article)
+        context["like_list"] = res_list
+
+        # いいね
+        like_dic = {}
+        status_dic = {}
+        articles = Article.objects.all()
+        for article in articles:
+            # いいね数読み込み
+            try:
+                like_count = Like.objects.filter(article_id=article.id).count()
+                like_dic[article.id] = like_count
+            except Like.DoesNotExist:
+                like_dic[article.id] = 0
+
+            # リクエストユーザーがいいねしたかどうか
+            try:
+                # いいねしてる
+                Like.objects.filter(article_id=article.id).get(user_id=self.request.user.id)
+                status_dic[article.id] = True
+            except Like.DoesNotExist:
+                # いいねしてない
+                status_dic[article.id] = False
+        context["likes"] = like_dic
+        context["status_dic"] = status_dic
+
+        return context
+
+
+# いいね機能
+@login_required
+def dellike(request, pk):
+    if request.method == 'POST':
+        # いいね追加
+        if "add_like" in request.POST:
+            add_like = Like(article_id=pk, user_id=request.user.id)
+            add_like.save()
+            return redirect("accounts:mylike", pk=request.user.id)
+
+        # いいね削除
+        elif "del_like" in request.POST:
+            del_like = Like.objects.get(article_id=pk, user_id=request.user.id)
+            del_like.delete()
+            return redirect("accounts:mylike", pk=request.user.id)

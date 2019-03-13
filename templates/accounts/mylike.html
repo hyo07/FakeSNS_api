@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% if like_list %}
+        {% for data in like_list %}
+            <p>----------------------------------------------------------</p>
+            <p>{{ data.text }}</p>
+            <p>{{ data.created_at }}</p>
+            <p>投稿者：<a href="{% url 'accounts:user_detail' data.author_id %}">{{ data.author }}</a></p>
+
+            {% for k, v in likes.items %}
+                {% if k == data.id %}
+                    <form method="post" action="{% url 'accounts:del_mylike' data.id %}">
+                        {% csrf_token %}
+                        <label>いいね！：{{ v }}</label>
+                        {% for k2, v2 in status_dic.items %}
+                            {% if k2 == data.id%}
+                                {% if not v2 %}
+                                    <input type="submit" name="add_like" value="追加">
+                                {% else %}
+                                    <input type="submit" name="del_like" value="削除">
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </form>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% else %}
+        <h3>現在いいねしている投稿はありません</h3>
+    {% endif %}
+
+{% endblock %}

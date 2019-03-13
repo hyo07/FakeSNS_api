@@ -13,4 +13,8 @@ urlpatterns = [
 
     path('<int:pk>/password_change/', views.PasswordChange.as_view(), name='password_change'),
     path('<int:pk>/password_change/done/', views.PasswordChangeDone.as_view(), name='password_change_done'),
+
+    path('<int:pk>/mylike', views.MyLikeArticle.as_view(), name="mylike"),
+    path('<int:pk>/mylike/like', views.dellike, name='del_mylike'),
+
 ]

@@ -8,6 +8,7 @@ from .forms import ArticleForm
 from .models import Article, Profile, Like
 from libs import BlackList
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
 
 
 # トップページ
@@ -117,6 +118,7 @@ class DeleteView(LoginRequiredMixin, generic.DeleteView):
 
 
 # いいね機能
+@login_required
 def like(request, pk):
     if request.method == 'POST':
         # いいね追加
@@ -128,6 +130,5 @@ def like(request, pk):
         # いいね削除
         elif "del_like" in request.POST:
             del_like = Like.objects.get(article_id=pk, user_id=request.user.id)
-            print(del_like)
             del_like.delete()
             return redirect("app:index")
