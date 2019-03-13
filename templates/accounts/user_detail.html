@@ -58,5 +58,19 @@
         {% endif %}
     {% endif %}
 
+    ----------------------------------------------------------
+
+    <h2>{{ user }} さんの投稿記事</h2>
+    {% for article in my_article %}
+        <p>----------------------------------------------------------</p>
+        <p>{{ article.text }}</p>
+        <p>{{ article.created_at }}</p>
+        <p>投稿者：<a href="{% url 'accounts:user_detail' article.author_id %}">{{ article.author }}</a></p>
+
+        {% if request.user.is_superuser or article.author_id == request.user.id %}
+            <label><a href="{% url 'app:update' article.id%}">編集</a></label>
+            <label><a href="{% url 'app:delete' article.id%}">削除</a></label>
+        {% endif %}
+    {% endfor %}
 
 {% endblock %}

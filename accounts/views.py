@@ -42,6 +42,11 @@ class UserDetail(LoginRequiredMixin, generic.DetailView):
         except Profile.DoesNotExist:
             context["profile"] = False
 
+        try:
+            context["my_article"] = Article.objects.filter(author=self.kwargs["pk"]).order_by("-created_at")
+        except Article.DoesNotExist:
+            context["my_article"] = False
+
         return context
 
 
@@ -195,12 +200,3 @@ def dellike(request, pk):
             del_like = Like.objects.get(article_id=pk, user_id=request.user.id)
             del_like.delete()
             return redirect("accounts:mylike", pk=request.user.id)
-
-
-class MyArticle(LoginRequiredMixin, generic.ListView):
-    template_name = "accounts/myarticle.html"
-    model = Article
-    paginate_by = 5
-
-    def get_queryset(self):
-        return Article.objects.filter(author=self.request.user.id).order_by("-created_at")

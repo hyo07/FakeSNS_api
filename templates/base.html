@@ -19,7 +19,6 @@
         <label>ログイン中：<strong>{{ request.user.username }}</strong></label>
         <label><a href="{% url 'accounts:user_detail' request.user.id %}">マイページ</a></label>
         <label><a href="{% url 'accounts:mylike' request.user.id %}">いいね一覧</a></label>
-        <label><a href="{% url 'accounts:myarticle' request.user.id %}">投稿記事一覧</a></label>
         <label><a href="{% url 'logout' %}">ログアウト</a></label>
     {% endif %}
 
