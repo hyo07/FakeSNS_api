@@ -1,19 +1,9 @@
-# 簡易 多分投稿SNS webアプリ
+# 簡易 短文投稿SNS
 
 ## 環境
 - Python 3.6.5
 - Mac
 - Django 2.1.7
-
-## 初期設定
-### マイグレーション
-`python manage.py makemigrations`  
-マイグレーションファイル作成  
-`python manage.py migrate`  
-マイグレート実行
-`python manage.py createsuperuser`  
-スーパーユーザー作成  
-（スーパーユーザー作成の時だけメールアドレスを求められる）
 
 ## 実装した機能
 - アカウント作成
@@ -26,3 +16,60 @@
 - パスワード変更
 - いいね一覧
 - 投稿した記事一覧
+
+## 環境構築
+```commandline
+brew install pyenv
+brew install pipenv 
+```
+まずpyenvとpipenvをインストールします  
+
+```commandline
+cd ~/FakeSNS
+pipenv shell
+```
+その後アプリケーションのあるディレクトリに移動したあと、  
+.venvファイルのある階層で仮想環境を起動。  
+
+すると
+```commandline
+.venv ❯
+```
+といった状態になれば、仮想環境の起動に成功しています。  
+この状態で
+```commandline
+.venv ❯ python --version
+```
+とコマンドを入力し、**Python 3.6.5** と結果が出力されることで確認が出来ます。  
+
+また、仮想環境から脱出する場合は、
+```commandline
+.venv ❯ exit
+```
+で抜けることができます。
+
+
+## ローカルwebサーバー立ち上げ手順
+
+### 初期設定
+```commandline
+python manage.py makemigrations
+```  
+マイグレーションファイル作成  
+
+```commandline
+python manage.py migrate
+```  
+マイグレート実行  
+
+```commandline
+python manage.py createsuperuser
+```  
+スーパーユーザー作成  
+（スーパーユーザー作成の時だけメールアドレスを求められる）
+
+### ローカルWebサーバー立ち上げ
+```commandline
+python manage.py runserver
+```
+ローカルサーバーを起動
