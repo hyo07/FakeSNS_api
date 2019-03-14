@@ -28,6 +28,7 @@ class UserDetail(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # ブラックリスト読み込み
         try:
             str_bl = BlackList.read_bl(self.request.user.profile.black_list)
             int_bl = BlackList.str_to_int(str_bl)
@@ -42,6 +43,7 @@ class UserDetail(LoginRequiredMixin, generic.DetailView):
         except Profile.DoesNotExist:
             context["profile"] = False
 
+        # 該当ユーザーの投稿記事のみ取得
         try:
             context["my_article"] = Article.objects.filter(author=self.kwargs["pk"]).order_by("-created_at")
         except Article.DoesNotExist:
@@ -58,8 +60,10 @@ class UserUpdate(LoginRequiredMixin, generic.UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
+        # ユーザーページの本人のみが編集を可能に
         if obj.user != self.request.user and not self.request.user.is_superuser:
             raise PermissionDenied("あなたはこのユーザー情報を編集できません")
+        # まだ自己紹介を投稿していない場合は編集を不可能に
         if not Profile.objects.filter(id=self.kwargs["pk"]):
             raise PermissionDenied("まだユーザー情報が登録されていません")
         return super(UserUpdate, self).dispatch(request, *args, **kwargs)
@@ -84,8 +88,10 @@ class UserCreate(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy("accounts:user_detail")
 
     def dispatch(self, request, *args, **kwargs):
+        # すでに自己紹介がある場合は新規投稿を不可能に
         if Profile.objects.filter(user_id=self.kwargs["pk"]):
             raise PermissionDenied("すでにユーザー情報が登録されています")
+        # ユーザーページの本人のみが投稿を可能に
         if Profile.objects.filter(user_id=self.request.user.id):
             raise PermissionDenied("あなたはこのユーザー情報を登録できません")
         return super(UserCreate, self).dispatch(request, *args, **kwargs)
@@ -128,6 +134,7 @@ def black_list(request, pk):
         req_profile = Profile.objects.get(user_id=request.user.id)
         text = req_profile.black_list
 
+        # ブラックリストへ追加
         if "add_bl" in request.POST:
             new_bl = BlackList.add_bl(text, str(pk))
             profile = Profile.objects.get(user_id=request.user.id)
@@ -135,6 +142,7 @@ def black_list(request, pk):
             profile.save()
             return redirect('accounts:user_detail', pk=request.user.id)
 
+        # ブラックリストから削除
         elif "del_bl" in request.POST:
             new_bl = BlackList.delete_bl(text, str(pk))
             profile = Profile.objects.get(user_id=request.user.id)

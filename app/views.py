@@ -22,6 +22,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
     model = Article
     paginate_by = 10
 
+    # 新規投稿を上に
     def get_queryset(self):
         return Article.objects.all().order_by("-created_at")
 
@@ -29,7 +30,7 @@ class IndexView(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # ブラックリスト
+        # ブラックリスト読み込み
         try:
             str_bl = BlackList.read_bl(self.request.user.profile.black_list)
             int_bl = BlackList.str_to_int(str_bl)
@@ -86,6 +87,7 @@ class UpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = ArticleForm
     success_url = reverse_lazy("app:index")
 
+    # 投稿したユーザーとスーパーユーザーのみが編集を可能に
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.author != self.request.user and not self.request.user.is_superuser:
@@ -106,6 +108,7 @@ class DeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Article
     success_url = reverse_lazy("app:index")
 
+    # 投稿したユーザーとスーパーユーザーのみが削除を可能に
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.author != self.request.user and not self.request.user.is_superuser:
