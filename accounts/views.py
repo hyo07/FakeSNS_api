@@ -1,17 +1,17 @@
-from django.views import generic
-from django.urls import reverse_lazy
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views import generic
 from app.models import Profile, Article, Like
 from app.forms import ProfileForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import get_user_model
-from django.contrib import messages
-from django.core.exceptions import PermissionDenied
-from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView
 from libs import BlackList
-from django.contrib.auth.models import User
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
 
 
 # アカウント新規作成

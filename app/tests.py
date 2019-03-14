@@ -1,8 +1,8 @@
-from django.test import TestCase
-from django.shortcuts import resolve_url
 from django.contrib.auth.models import User
-from .models import Article, Profile, Like
+from django.shortcuts import resolve_url
+from django.test import TestCase
 from django.utils import timezone
+from .models import Article, Profile, Like
 
 
 # モデルテスト
