@@ -77,3 +77,20 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 ローカルサーバーを起動
+
+
+## テスト実行方法
+~/FakeSNS の階層で、  
+
+```commandline
+.venv ❯ python manage.py test
+```
+全てのアプリを一括でテストする場合  
+
+```commandline
+.venv ❯ python manage.py test app
+.venv ❯ python manage.py test acounts
+```
+各アプリのテストを実行する場合  
+  
+とすることでテストを実行可能
