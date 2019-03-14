@@ -140,6 +140,7 @@ def black_list(request, pk):
             profile = Profile.objects.get(user_id=request.user.id)
             profile.black_list = new_bl
             profile.save()
+            messages.success(request, "ブラックリストに追加しました")
             return redirect('accounts:user_detail', pk=request.user.id)
 
         # ブラックリストから削除
@@ -148,6 +149,7 @@ def black_list(request, pk):
             profile = Profile.objects.get(user_id=request.user.id)
             profile.black_list = new_bl
             profile.save()
+            messages.success(request, "ブラックリストから削除しました")
             return redirect('accounts:user_detail', pk=request.user.id)
 
 
