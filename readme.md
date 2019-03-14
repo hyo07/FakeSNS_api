@@ -76,7 +76,7 @@ python manage.py createsuperuser
 ```commandline
 python manage.py runserver
 ```
-ローカルサーバーを起動
+ローカルWebサーバーを起動
 
 
 ## テスト実行方法
