@@ -69,19 +69,19 @@ python manage.py makemigrations
 
 
 ```commandline
-python manage.py migrate
+.venv ❯ python manage.py migrate
 ```  
 マイグレート実行  
 
 ```commandline
-python manage.py createsuperuser
+.venv ❯ python manage.py createsuperuser
 ```  
 スーパーユーザー作成  
 （スーパーユーザー作成の時だけメールアドレスを求められる）
 
 ### ローカルWebサーバー立ち上げ
 ```commandline
-python manage.py runserver
+.venv ❯ python manage.py runserver
 ```
 ローカルWebサーバーを起動
 
