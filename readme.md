@@ -48,7 +48,14 @@ pipenv shell
 ```commandline
 .venv ❯ exit
 ```
-で抜けることができます。
+で抜けることができます。  
+<br>
+
+もし、別の手法でPython3.6.5を用意した場合
+```commandline
+pip install -r requirements.txt
+```
+とすることで必要なモジュールをインストールすることも可能です。
 
 
 ## ローカルwebサーバー立ち上げ手順
