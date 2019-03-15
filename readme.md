@@ -62,7 +62,7 @@ pip install -r requirements.txt
 
 ### 初期設定
 ```commandline
-python manage.py makemigrations
+.venv ❯ python manage.py makemigrations
 ```  
 ~~マイグレーションファイル作成~~    
 もしも次に行うマイグレートに失敗した場合に上記を実行してみてください。
