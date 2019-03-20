@@ -39,3 +39,9 @@ class Like(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='like_user')
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class BlackList(models.Model):
+    my_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='my_user')
+    bl_user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='bl_user')
+    created_at = models.DateTimeField(auto_now_add=True)
