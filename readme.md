@@ -101,3 +101,47 @@ pip install -r requirements.txt
 各アプリのテストを実行する場合  
   
 とすることでテストを実行可能
+
+
+## WebAPI エンドポイントまとめ
+`http://localhost:8000/`  
+URL  
+
+`api/rest-auth/login`  
+POST:ログイン(成功するとトークン発行)  
+
+`api/rest-auth/logout/`  
+POST:ログアウト  
+
+`api/rest-auth/registration/`  
+POST:サインアップ(成功するとトークン発行)  
+
+`api/article/`  
+GET:投稿一覧, POST:新規投稿  
+
+`api/article/<article_id>`  
+GET:各投稿の個別取得, PUT:編集, DELETE:削除  
+
+`<user_id>/article/`  
+GET:各ユーザーごとの投稿一覧  
+
+`api/profile/`  
+GET:ユーザー情報一覧, POST:新規ユーザー情報登録（既に登録している場合は不可）  
+
+`api/profile/<user_id>`  
+GET:各ユーザー情報を個別取得, PUT:ユーザー情報の編集（自身の情報のみ編集可）  
+
+`api/blacklist`  
+GET:自身の追加したブラックリスト一覧, POST:ブラックリストへの追加と削除  
+
+`api/like`  
+GET:自身が追加したいいね一覧  
+
+`api/like/add`  
+GET:投稿一覧, POST:いいね追加  
+
+`api/like/<like_id>`  
+GET:いいねを個別取得, DELETE:いいねから削除  
+
+`api/users`  
+GET:ユーザー一覧
