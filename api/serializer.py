@@ -10,8 +10,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    author = UserSerializer()
-
     class Meta:
         model = Article
         fields = ('id', 'text', 'created_at', 'author')

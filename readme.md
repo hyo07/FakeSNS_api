@@ -104,44 +104,59 @@ pip install -r requirements.txt
 
 
 ## WebAPI エンドポイントまとめ
+CURLコマンド以外にもブラウザでGET,POST等をリクエストする機能あり。ブラウザからURLにアクセスするのみ。（こちらのが手間がなく簡単）  
+また、ログイン、ログアウト、サインアップ以外の全てのAPIには利用するのにログイン(トークン)が必要です。  
+トークンの付与は、
+`curl -H "Authorization: Token <TOKEN>"  http://localhost:8000/api/article/`  
+の<TOKEN>に値を代入することで可能  
+　　
+
 `http://localhost:8000/`  
 URL  
 
-`api/rest-auth/login`  
+`api/rest-auth/login/`  
 POST:ログイン(成功するとトークン発行)  
+リクエスト:{"username": "", "password": ""}  
+認証に成功すると、トークンがレスポンスされます。  
 
 `api/rest-auth/logout/`  
 POST:ログアウト  
 
 `api/rest-auth/registration/`  
 POST:サインアップ(成功するとトークン発行)  
+リクエスト:{"username": "", "password1": "", "password2": ""}  
 
 `api/article/`  
-GET:投稿一覧, POST:新規投稿  
+GET:投稿一覧(ブラックリストに追加されたものは表示しない), POST:新規投稿  
+リクエスト:{"text": "", "author": "<user_id>"}  
 
-`api/article/<article_id>`  
+`api/article/<article_id>/`  
 GET:各投稿の個別取得, PUT:編集, DELETE:削除  
+リクエスト:{"id": "<article_id>", """text": "", "author": "<user_id>"}  
 
 `<user_id>/article/`  
 GET:各ユーザーごとの投稿一覧  
 
 `api/profile/`  
 GET:ユーザー情報一覧, POST:新規ユーザー情報登録（既に登録している場合は不可）  
+リクエスト:{"introduction": "", "sex": "<1:女性, 2:男性>"}  
 
-`api/profile/<user_id>`  
+`api/profile/<user_id>/`  
 GET:各ユーザー情報を個別取得, PUT:ユーザー情報の編集（自身の情報のみ編集可）  
+リクエスト:{"introduction": "", "sex": "<1:女性, 2:男性>"}  
 
-`api/blacklist`  
+`api/blacklist/`  
 GET:自身の追加したブラックリスト一覧, POST:ブラックリストへの追加と削除  
+リクエスト:{"add_user_id": <追加したいuser_id>, "del_user_id": <追加したいuser_id>}  
 
-`api/like`  
+`api/like/`  
 GET:自身が追加したいいね一覧  
 
-`api/like/add`  
+`api/like/add/`  
 GET:投稿一覧, POST:いいね追加  
 
-`api/like/<like_id>`  
+`api/like/<like_id>/`  
 GET:いいねを個別取得, DELETE:いいねから削除  
 
-`api/users`  
+`api/users/`  
 GET:ユーザー一覧
