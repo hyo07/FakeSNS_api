@@ -182,7 +182,7 @@ class Blacklist(APIView):
                     "message": "既に <username: {}> はブラックリストに追加されています".format(res_dic[int(add_id)])
                 })
             else:
-                bl = BlackList.add_bl(text, add_id)
+                bl = BlackList.add_bl(text, str(add_id))
                 profile.black_list = bl
                 profile.save()
         except KeyError:
@@ -199,7 +199,7 @@ class Blacklist(APIView):
             old_bl_str = BlackList.read_bl(text)
             old_bl = BlackList.str_to_int(old_bl_str)
             if int(del_id) in old_bl:
-                bl = BlackList.delete_bl(text, del_id)
+                bl = BlackList.delete_bl(text, str(del_id))
                 profile.black_list = bl
                 profile.save()
             else:
