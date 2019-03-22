@@ -98,7 +98,6 @@ class ProfileIndividual(APIView):
         res_pro_dic["introduction"] = profile.introduction
         res_pro_dic["sex"] = profile.sex
         res_pro_dic["user"] = {"id": profile.user_id, "username": profile.user.username}
-        print(type(profile.sex))
         return Response(res_pro_dic)
 
     def put(self, request, pk):
@@ -187,7 +186,7 @@ class Blacklist(APIView):
                 profile.save()
         except KeyError:
             pass
-        # ------------------------------------------------------------------------------------------------------------------------
+
         # "del_user_id"を取得しブラックリストから削除
         try:
             del_id = request.data["del_user_id"]
@@ -270,13 +269,12 @@ class LikeAdd(APIView):
 
         res_like_dic = {}
         res_like_dic["message"] = "いいねに追加しました"
-        res_like_dic["id"] = 90
+        res_like_dic["id"] = like.id
         res_like_dic["user"] = {"id": self.request.user.id, "username": self.request.user.username}
         article = Article.objects.get(id=article_id)
         user = User.objects.get(id=article.author_id)
         res_like_dic["article"] = {"id": article.id, "text": article.text, "created_at": article.created_at,
                                    "author": {"id": article.author_id, "username": user.username}}
-        print(res_like_dic)
         return Response(res_like_dic)
 
 
@@ -292,5 +290,3 @@ class UserList(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
-
-# TODO エンドポイントまとめ、テスト

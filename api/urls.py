@@ -2,9 +2,10 @@ from django.urls import path
 
 from . import views
 
+app_name = "api"
 
 urlpatterns = [
-    path('article/', views.ArticleIndex.as_view()),
+    path('article/', views.ArticleIndex.as_view(), name="article"),
     path('article/<int:pk>/', views.ArticleIndividual.as_view()),
     path('<int:pk>/article/', views.UsersArticle.as_view()),
     path('profile/', views.ProfileIndex.as_view()),
@@ -13,6 +14,6 @@ urlpatterns = [
     path('like/', views.LikeList.as_view()),
     path('like/add/', views.LikeAdd.as_view()),
     path('like/<int:pk>/', views.LikeIndividual.as_view()),
-    path('users/', views.UserList.as_view()),
+    path('users/', views.UserList.as_view(), name="users"),
 
 ]

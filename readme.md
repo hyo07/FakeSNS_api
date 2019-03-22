@@ -128,22 +128,22 @@ POST:サインアップ(成功するとトークン発行)
 
 `api/article/`  
 GET:投稿一覧(ブラックリストに追加されたものは表示しない), POST:新規投稿  
-リクエスト:{"text": "", "author": "<user_id>"}  
+リクエスト:{"text": "", "author": <user_id>}  
 
 `api/article/<article_id>/`  
 GET:各投稿の個別取得, PUT:編集, DELETE:削除  
-リクエスト:{"id": "<article_id>", """text": "", "author": "<user_id>"}  
+リクエスト:{"id": "<article_id>", "text": "", "author": <user_id>}  
 
 `<user_id>/article/`  
 GET:各ユーザーごとの投稿一覧  
 
 `api/profile/`  
 GET:ユーザー情報一覧, POST:新規ユーザー情報登録（既に登録している場合は不可）  
-リクエスト:{"introduction": "", "sex": "<1:女性, 2:男性>"}  
+リクエスト:{"introduction": "", "sex": <1:女性, 2:男性>}  
 
 `api/profile/<user_id>/`  
 GET:各ユーザー情報を個別取得, PUT:ユーザー情報の編集（自身の情報のみ編集可）  
-リクエスト:{"introduction": "", "sex": "<1:女性, 2:男性>"}  
+リクエスト:{"introduction": "", "sex": <1:女性, 2:男性>}  
 
 `api/blacklist/`  
 GET:自身の追加したブラックリスト一覧, POST:ブラックリストへの追加と削除  
