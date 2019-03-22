@@ -97,6 +97,7 @@ pip install -r requirements.txt
 ```commandline
 .venv ❯ python manage.py test app
 .venv ❯ python manage.py test acounts
+.venv ❯ python manage.py test api
 ```
 各アプリのテストを実行する場合  
   
@@ -104,11 +105,16 @@ pip install -r requirements.txt
 
 
 ## WebAPI エンドポイントまとめ
-CURLコマンド以外にもブラウザでGET,POST等をリクエストする機能あり。ブラウザからURLにアクセスするのみ。（こちらのが手間がなく簡単）  
+CURLコマンド以外にもブラウザでGET,POST等をリクエストする機能あり。方法はブラウザからURLにアクセスするのみ。（こちらのが手間がなく簡単）  
 また、ログイン、ログアウト、サインアップ以外の全てのAPIには利用するのにログイン(トークン)が必要です。  
 トークンの付与は、
 `curl -H "Authorization: Token <TOKEN>"  http://localhost:8000/api/article/`  
 の<TOKEN>に値を代入することで可能  
+また、テストの実行は、
+```commandline
+.venv ❯ python manage.py test api
+```
+で行えます。  
 　　
 
 `http://localhost:8000/`  
