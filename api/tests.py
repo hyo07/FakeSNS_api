@@ -19,10 +19,12 @@ class LoginTests(APITestCase):
         # スーパーユーザーのログイン確認
         response = self.client.post("/api/rest-auth/login/", {"username": "admin", 'password': 'admin'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertTrue("key" in json.loads(response.content))
 
         # 一般ユーザーのログイン確認
         response = self.client.post("/api/rest-auth/login/", {'username': 'test', 'password': 'test'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertTrue("key" in json.loads(response.content))
 
         # 不正な入力での確認
         response = self.client.post("/api/rest-auth/login/", {'username': 'hgoe', 'password': 'hoge'}, format='json')
@@ -39,6 +41,7 @@ class LoginTests(APITestCase):
                                     format='json'
                                     )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, json.loads(response.content))
+        self.assertTrue("key" in json.loads(response.content))
 
         # DBに追加されているか
         user = User.objects.first()
@@ -54,6 +57,7 @@ class LoginTests(APITestCase):
         # トークン取得
         response = self.client.post("/api/rest-auth/login/", {"username": "test", 'password': 'test'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertTrue("key" in json.loads(response.content))
         key = json.loads(response.content)["key"]
 
         # トークン保持してarticleにGET
@@ -66,6 +70,7 @@ class LoginTests(APITestCase):
                                     format="json", HTTP_X_AUTH_TOKEN=key)
         res_article = json.loads(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, json.loads(response.content))
+        self.assertEqual(json.loads(response.content)["text"], "TEXT")
 
         # トークン保持してarticleにGET、POSTしたデータと同じものがあるか
         response = self.client.get(reverse("api:article"), HTTP_X_AUTH_TOKEN=key)
@@ -76,15 +81,22 @@ class LoginTests(APITestCase):
         response = self.client.get("/api/2/article/", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
         self.assertEqual(res_article, json.loads(response.content)[0])
+        self.assertEqual(json.loads(response.content)[0]["text"], "TEXT")
 
         # PUTで編集
         response = self.client.put("/api/article/1/", {"text": "PUUTTTT", 'author': 2},
                                    format="json", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertEqual(json.loads(response.content)["text"], "PUUTTTT")
 
         # DELETEで削除
         response = self.client.delete("/api/article/1/", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # articleにGETして中身が無しかどうか
+        response = self.client.get(reverse("api:article"), HTTP_X_AUTH_TOKEN=key)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertEqual([], json.loads(response.content))
 
     def test_profile(self):
         create_user()
@@ -96,6 +108,7 @@ class LoginTests(APITestCase):
         # トークン取得
         response = self.client.post("/api/rest-auth/login/", {"username": "test", 'password': 'test'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertTrue("key" in json.loads(response.content))
         key = json.loads(response.content)["key"]
 
         # GET
@@ -107,6 +120,7 @@ class LoginTests(APITestCase):
         response = self.client.post("/api/profile/", {"introduction": "test", 'sex': 1},
                                     format='json', HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertTrue("test" in json.loads(response.content).values())
 
         # １つ追加されているかGETで確認
         response = self.client.get("/api/profile/", HTTP_X_AUTH_TOKEN=key)
@@ -116,11 +130,13 @@ class LoginTests(APITestCase):
         # 個別取得にGET
         response = self.client.get("/api/profile/2/", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertEqual(json.loads(response.content)["introduction"], "test")
 
         # 個別取得にPUT
         response = self.client.put("/api/profile/2/", {"introduction": "PUTTUTUT", 'sex': 2},
                                    format='json', HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertEqual(json.loads(response.content)["introduction"], "PUTTUTUT")
 
     def test_blacklist(self):
         create_user()
@@ -132,6 +148,7 @@ class LoginTests(APITestCase):
         # トークン取得
         response = self.client.post("/api/rest-auth/login/", {"username": "test", 'password': 'test'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertTrue("key" in json.loads(response.content))
         key = json.loads(response.content)["key"]
 
         # ユーザー情報登録（登録しないとブラックリスト機能は使えないため）
@@ -177,30 +194,36 @@ class LoginTests(APITestCase):
         # トークン取得
         response = self.client.post("/api/rest-auth/login/", {"username": "test", 'password': 'test'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertTrue("key" in json.loads(response.content))
         key = json.loads(response.content)["key"]
 
         # 別ユーザーのトークン取得
         response = self.client.post("/api/rest-auth/login/", {"username": "admin", 'password': 'admin'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertTrue("key" in json.loads(response.content))
         key2 = json.loads(response.content)["key"]
 
         # 別ユーザーでトークン保持してarticleにPOST
         response = self.client.post(reverse("api:article"),  {"text": "TEXT", 'author': 1},
                                     format="json", HTTP_X_AUTH_TOKEN=key2)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, json.loads(response.content))
+        self.assertEqual(json.loads(response.content)["text"], "TEXT")
 
         # いいねにGET
         response = self.client.get("/api/like/", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
         self.assertEqual(json.loads(response.content), [])
+        # TODO　気持ち追加色々
 
         # GETで全投稿一覧、別ユーザーの投稿が確認
         response = self.client.get("/api/like/add/", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertEqual(json.loads(response.content)[0]["author"]["id"], 1)
 
         # POSTでいいねに追加
         response = self.client.post("/api/like/add/", {"article_id": 1}, format='json', HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertEqual(json.loads(response.content)["article"]["text"], "TEXT")
 
         # いいねに追加されてるか確認
         response = self.client.get("/api/like/", HTTP_X_AUTH_TOKEN=key)
@@ -231,9 +254,11 @@ class LoginTests(APITestCase):
         # トークン取得
         response = self.client.post("/api/rest-auth/login/", {"username": "test", 'password': 'test'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertTrue("key" in json.loads(response.content))
         key = json.loads(response.content)["key"]
 
         # ユーザー一覧をGETで取得
         response = self.client.get("/api/users/", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
         self.assertEqual(len(json.loads(response.content)), 2)
+        self.assertEqual(json.loads(response.content)[1]["username"], "test")
