@@ -5,7 +5,7 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .permissions import IsAuthorOrReadOnly, IsUserOrReadOnly
-from .serializer import UserSerializer, ArticleSerializer, LikeSerializer
+from .serializer import UserSerializer, ArticleSerializer, LikeSerializer, AddArticleSerializer
 from libs import BlackList
 
 
@@ -24,12 +24,54 @@ class ArticleIndex(generics.ListCreateAPIView):
         int_bl = BlackList.str_to_int(str_bl)
         return Article.objects.exclude(author__in=int_bl).order_by("-created_at")
 
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return AddArticleSerializer
+        return ArticleSerializer
+
+    def post(self, request, *args, **kwargs):
+        try:
+            text = self.request.data["text"]
+        except KeyError:
+            return Response({"message": "入力が不正です"})
+        article = Article(text=text, author_id=self.request.user.id)
+        article.save()
+        res_art_dic = {}
+        res_art_dic["id"] = article.id
+        res_art_dic["text"] = article.text
+        res_art_dic["created_at"] = article.created_at
+        res_art_dic["author"] = {"id": article.author.id, "username":  article.author.username}
+        return Response(res_art_dic)
+
 
 # 投稿の個別取得、編集、削除
 class ArticleIndividual(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthorOrReadOnly,)
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+
+    # 投稿者以外も取得は可能にパーミッションを変更
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            permission_classes = (permissions.IsAuthenticated,)
+        else:
+            permission_classes = (IsAuthorOrReadOnly,)
+        return [permission() for permission in permission_classes]
+
+    def put(self, request, *args, **kwargs):
+        try:
+            text = self.request.data["text"]
+        except KeyError:
+            return Response({"message": "入力が不正です"})
+        article = Article.objects.get(id=self.kwargs["pk"])
+        article.text = text
+        article.save()
+        res_art_dic = {}
+        res_art_dic["id"] = article.id
+        res_art_dic["text"] = article.text
+        res_art_dic["created_at"] = article.created_at
+        res_art_dic["author"] = {"id": article.author.id, "username":  article.author.username}
+        return Response(res_art_dic)
 
 
 # ユーザーごとの投稿一覧
@@ -167,6 +209,8 @@ class Blacklist(APIView):
                 User.objects.get(id=int(add_id))
             except User.DoesNotExist:
                 return Response({"message": "<user_id: {}>というアカウントは存在しません".format(add_id)})
+            if add_id == self.request.user.id:
+                return Response({"message": "自身をブラックリストに追加することは出来ません"})
             text = profile.black_list
             old_bl_str = BlackList.read_bl(text)
             old_bl = BlackList.str_to_int(old_bl_str)

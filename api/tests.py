@@ -11,7 +11,7 @@ def create_user():
     return admin, user
 
 
-class LoginTests(APITestCase):
+class ApiTests(APITestCase):
 
     def test_login(self):
         create_user()
@@ -63,28 +63,26 @@ class LoginTests(APITestCase):
         # トークン保持してarticleにGET
         response = self.client.get(reverse("api:article"), HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
-        self.assertEqual([], json.loads(response.content))
+        self.assertEqual(json.loads(response.content), [])
 
         # トークン保持してarticleにPOST
-        response = self.client.post(reverse("api:article"),  {"text": "TEXT", 'author': 2},
+        response = self.client.post(reverse("api:article"),  {"text": "TEXT"},
                                     format="json", HTTP_X_AUTH_TOKEN=key)
-        res_article = json.loads(response.content)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, json.loads(response.content))
+        self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
         self.assertEqual(json.loads(response.content)["text"], "TEXT")
 
         # トークン保持してarticleにGET、POSTしたデータと同じものがあるか
         response = self.client.get(reverse("api:article"), HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
-        self.assertEqual(res_article, json.loads(response.content)[0])
+        self.assertEqual(json.loads(response.content)[0]["text"], "TEXT")
 
         # <user_id>/article/ で取得できるか確認
         response = self.client.get("/api/2/article/", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
-        self.assertEqual(res_article, json.loads(response.content)[0])
         self.assertEqual(json.loads(response.content)[0]["text"], "TEXT")
 
         # PUTで編集
-        response = self.client.put("/api/article/1/", {"text": "PUUTTTT", 'author': 2},
+        response = self.client.put("/api/article/1/", {"text": "PUUTTTT"},
                                    format="json", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
         self.assertEqual(json.loads(response.content)["text"], "PUUTTTT")
@@ -96,7 +94,7 @@ class LoginTests(APITestCase):
         # articleにGETして中身が無しかどうか
         response = self.client.get(reverse("api:article"), HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
-        self.assertEqual([], json.loads(response.content))
+        self.assertEqual(json.loads(response.content), [])
 
     def test_profile(self):
         create_user()
@@ -114,7 +112,7 @@ class LoginTests(APITestCase):
         # GET
         response = self.client.get("/api/profile/", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
-        self.assertEqual([], json.loads(response.content))
+        self.assertEqual(json.loads(response.content), [])
 
         # POST
         response = self.client.post("/api/profile/", {"introduction": "test", 'sex': 1},
@@ -178,7 +176,12 @@ class LoginTests(APITestCase):
         blacklist = json.loads(response.content)["black_list"]
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
 
-        # GETで確認
+        # 自身を追加は出来ない
+        response = self.client.post("/api/blacklist/", {"add_user_id": 2}, format='json', HTTP_X_AUTH_TOKEN=key)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
+        self.assertEqual(json.loads(response.content)["message"], "自身をブラックリストに追加することは出来ません")
+
+        # GETで確認（自身の追加も出来ていないはず）
         response = self.client.get("/api/blacklist/", HTTP_X_AUTH_TOKEN=key)
         blacklist = json.loads(response.content)["BlackList"]
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
@@ -204,16 +207,15 @@ class LoginTests(APITestCase):
         key2 = json.loads(response.content)["key"]
 
         # 別ユーザーでトークン保持してarticleにPOST
-        response = self.client.post(reverse("api:article"),  {"text": "TEXT", 'author': 1},
+        response = self.client.post(reverse("api:article"),  {"text": "TEXT"},
                                     format="json", HTTP_X_AUTH_TOKEN=key2)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, json.loads(response.content))
+        self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
         self.assertEqual(json.loads(response.content)["text"], "TEXT")
 
         # いいねにGET
         response = self.client.get("/api/like/", HTTP_X_AUTH_TOKEN=key)
         self.assertEqual(response.status_code, status.HTTP_200_OK, json.loads(response.content))
         self.assertEqual(json.loads(response.content), [])
-        # TODO　気持ち追加色々
 
         # GETで全投稿一覧、別ユーザーの投稿が確認
         response = self.client.get("/api/like/add/", HTTP_X_AUTH_TOKEN=key)
