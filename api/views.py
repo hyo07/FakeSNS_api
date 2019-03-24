@@ -60,6 +60,12 @@ class ArticleIndividual(generics.RetrieveUpdateDestroyAPIView):
 
     def put(self, request, *args, **kwargs):
         try:
+            art = Article.objects.get(id=self.kwargs["pk"])
+        except Article.DoesNotExist:
+            return Response({"message": "存在しない記事です"})
+        if art.author_id != self.request.user.id:
+            return Response({"message": "このアクションを実行する権限がありません"})
+        try:
             text = self.request.data["text"]
         except KeyError:
             return Response({"message": "入力が不正です"})
