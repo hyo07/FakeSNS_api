@@ -118,7 +118,7 @@ CURLコマンド以外にもブラウザでGET,POST等をリクエストする�
 　　
 
 `http://localhost:8000/api/`  
-URL  
+URL(TOPページ等は用意していないので、必ず以下のエンドポイントを付け足してください。)  
 
 `rest-auth/login/`  
 POST:ログイン(成功するとトークン発行)  
