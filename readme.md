@@ -130,36 +130,37 @@ POST:ログアウト
 
 `rest-auth/registration/`  
 POST:サインアップ(成功するとトークン発行)  
-リクエスト:{"username": "", "password1": "", "password2": ""}  
+リクエスト: {"username": "", "password1": "", "password2": ""}  
 
 `article/`  
 GET:投稿一覧(ブラックリストに追加されたものは表示しない), POST:新規投稿  
-リクエスト:{"text": "", "author": <user_id>}  
+リクエスト: {"text": "", "author": <user_id>}  
 
 `article/<article_id>/`  
 GET:各投稿の個別取得, PUT:編集, DELETE:削除  
-リクエスト:{"id": "<article_id>", "text": "", "author": <user_id>}  
+リクエスト: {"id": "<article_id>", "text": "", "author": <user_id>}  
 
 `<user_id>/article/`  
 GET:各ユーザーごとの投稿一覧  
 
 `profile/`  
 GET:ユーザー情報一覧, POST:新規ユーザー情報登録（既に登録している場合は不可）  
-リクエスト:{"introduction": "", "sex": <1:女性, 2:男性>}  
+リクエスト: {"introduction": "", "sex": <1:女性, 2:男性>}  
 
 `profile/<user_id>/`  
 GET:各ユーザー情報を個別取得, PUT:ユーザー情報の編集（自身の情報のみ編集可）  
-リクエスト:{"introduction": "", "sex": <1:女性, 2:男性>}  
+リクエスト: {"introduction": "", "sex": <1:女性, 2:男性>}  
 
 `blacklist/`  
 GET:自身の追加したブラックリスト一覧, POST:ブラックリストへの追加と削除  
-リクエスト:{"add_user_id": <追加したいuser_id>, "del_user_id": <追加したいuser_id>}  
+リクエスト: {"add_user_id": <追加したいuser_id>, "del_user_id": <追加したいuser_id>}  
 
 `like/`  
 GET:自身が追加したいいね一覧  
 
 `like/add/`  
 GET:投稿一覧, POST:いいね追加  
+リクエスト: {"article_id": <article_id>}  
 
 `like/<like_id>/`  
 GET:いいねを個別取得, DELETE:いいねから削除  
