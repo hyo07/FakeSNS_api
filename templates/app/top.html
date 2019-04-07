@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+    <h3>GitHubリポジトリ: <a href="https://github.com/hyo07/FakeSNS_api">GitHub</a></h3>
+    <h3>機能一覧</h3>
+    <ul>
+        <li>アカウント作成</li>
+        <li>ログイン、ログアウト</li>
+        <li>記事一覧、投稿、編集、削除</li>
+        <li>ユーザーページ</li>
+        <li>プロフィール登録、編集</li>
+        <li>ブラックリスト登録、削除</li>
+        <li>いいね追加、削除</li>
+        <li>パスワード変更</li>
+        <li>いいね一覧</li>
+        <li>投稿した記事一覧</li>
+        <li><strong>上記機能のwebAPI版</strong></li>
+    </ul>
+    <h3>webAPIエンドポイント一覧（その他諸々）: <a href="https://github.com/hyo07/FakeSNS_api#webapi-%E3%82%A8%E3%83%B3%E3%83%89%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88%E3%81%BE%E3%81%A8%E3%82%81">readme</a> </h3>
+
+{% endblock %}
+
+
+{% block not_log_content %}
+    <h2><a href="{% url 'login' %}">ログイン</a></h2>
+    <h2><a href="{% url 'accounts:signup' %}">アカウント作成</a></h2>
+
+    <br>
+-----------------------------------------------------------------------
+    <h3>GitHubリポジトリ: <a href="https://github.com/hyo07/FakeSNS_api">GitHub</a></h3>
+    <h3>機能一覧</h3>
+    <ul>
+        <li>アカウント作成</li>
+        <li>ログイン、ログアウト</li>
+        <li>記事一覧、投稿、編集、削除</li>
+        <li>ユーザーページ</li>
+        <li>プロフィール登録、編集</li>
+        <li>ブラックリスト登録、削除</li>
+        <li>いいね追加、削除</li>
+        <li>パスワード変更</li>
+        <li>いいね一覧</li>
+        <li>投稿した記事一覧</li>
+        <li><strong>上記機能のwebAPI版</strong></li>
+    </ul>
+    <h3>webAPIエンドポイント一覧（その他諸々）: <a href="https://github.com/hyo07/FakeSNS_api/blob/master/readme.md">readme</a> </h3>
+{% endblock %}

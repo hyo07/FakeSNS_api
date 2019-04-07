@@ -13,7 +13,7 @@ from libs import BlackList
 
 # トップページ
 def top(request):
-    return render(request, "app/index.html")
+    return render(request, "app/top.html")
 
 
 # 一覧表示
