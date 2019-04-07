@@ -151,6 +151,8 @@ REST_FRAMEWORK = {
     ],
 }
 
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 
 try:
     from .local_settings import *
@@ -161,5 +163,3 @@ except ImportError:
 if not DEBUG:
     import django_heroku
     django_heroku.settings(locals())
-
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
