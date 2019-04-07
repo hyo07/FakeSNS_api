@@ -9,6 +9,8 @@ pymysql = "*"
 "jinja2" = "*"
 django-rest-auth = "*"
 django-allauth = "*"
+gunicorn = "*"
+django-heroku = "*"
 
 [dev-packages]
 
