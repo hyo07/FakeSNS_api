@@ -81,7 +81,7 @@ class ViewTest(TestCase):
         response = self.client.get(resolve_url('accounts:mylike', pk=self.user.id))
         self.assertEqual(200, response.status_code)
         # いいねを追加し、追加した分がcontextに渡されているか
-        article = Article.objects.create(text="Do you like?", author_id=11, created_at=timezone.now())
+        article = Article.objects.create(text="Do you like?", author_id=1, created_at=timezone.now())
         article_id = article.id
         Like.objects.create(article_id=article_id, user_id=self.user.id, created_at=timezone.now())
         response = self.client.get(resolve_url('accounts:mylike', pk=self.user.id))

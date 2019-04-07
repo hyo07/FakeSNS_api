@@ -25,15 +25,6 @@ SECRET_KEY = '8z8wz=dt(1v!y*c_n!9ydw#!(7dreicx7350pbu$ib$g6auk+c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-try:
-    from .local_settings import *
-except ImportError:
-    pass
-
-if not DEBUG:
-    import django_heroku
-    django_heroku.settings(locals())
-
 ALLOWED_HOSTS = ["*"]
 
 
@@ -159,5 +150,16 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+
+try:
+    from .local_settings import *
+    DEBUG = True
+except ImportError:
+    pass
+
+if not DEBUG:
+    import django_heroku
+    django_heroku.settings(locals())
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))

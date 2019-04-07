@@ -1,4 +1,4 @@
-from app.models import Article, Profile, Like, BlackList
+from app.models import Article, Profile, Like
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions

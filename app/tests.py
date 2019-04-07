@@ -7,6 +7,9 @@ from .models import Article, Profile, Like
 
 # モデルテスト
 class ArticleTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='TestUser', password='passoworld')
+
     def test___str__(self):
         article = Article.objects.create(text="test", author_id=1, created_at=timezone.now())
         self.assertTrue(article)
@@ -15,6 +18,9 @@ class ArticleTest(TestCase):
 
 # モデルテスト
 class ProfileTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='TestUser', password='passoworld')
+
     def test___str__(self):
         profile = Profile.objects.create(introduction="test", sex=1, user_id=1)
         self.assertTrue(profile)
@@ -100,7 +106,7 @@ class ViewTest(TestCase):
 
     def test_like(self):
         # データを一つ追加し、いいね確認
-        article = Article.objects.create(text="Do you like?", author_id=11, created_at=timezone.now())
+        article = Article.objects.create(text="Do you like?", author_id=1, created_at=timezone.now())
         article_id = article.id
         Like.objects.create(article_id=article_id, user_id=self.user.id, created_at=timezone.now())
         response = self.client.get(resolve_url('app:index'))
